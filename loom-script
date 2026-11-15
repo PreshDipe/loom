@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loom Walkthrough Script</title>
+<style>
+  :root { --bg:#f7f7f5; --card:#fff; --ink:#1f2328; --muted:#636c76; --line:#e3e3df; --accent:#0a66c2;
+          --accent-bg:#e7f0fa; --say:#fffbea; --say-line:#f0d878; --code-bg:#f2f2ef; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg:#111315; --card:#1a1d21; --ink:#e7e9ec; --muted:#9aa3ad; --line:#2c3036;
+      --accent:#5ea8f0; --accent-bg:#132a40; --say:#2a2614; --say-line:#7a6a2a; --code-bg:#22262b; }
+  }
+  :root[data-theme="dark"] { --bg:#111315; --card:#1a1d21; --ink:#e7e9ec; --muted:#9aa3ad; --line:#2c3036;
+      --accent:#5ea8f0; --accent-bg:#132a40; --say:#2a2614; --say-line:#7a6a2a; --code-bg:#22262b; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:880px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:26px; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 20px; }
+  .box, .scene { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 18px; margin-bottom:16px; }
+  .box h2 { font-size:16px; margin:0 0 8px; }
+  .box ul, .box ol { margin:0; padding-left:20px; }
+  .scene header { display:flex; gap:12px; align-items:baseline; flex-wrap:wrap; margin-bottom:8px; }
+  .time { font-family:ui-monospace,Consolas,monospace; font-size:13px; background:var(--accent-bg); color:var(--accent); padding:2px 8px; border-radius:6px; font-weight:600; }
+  .scene h2 { font-size:18px; margin:0; }
+  .show { color:var(--muted); font-size:14px; margin:0 0 10px; }
+  .show b { color:var(--ink); }
+  .say { background:var(--say); border-left:4px solid var(--say-line); padding:10px 14px; border-radius:0 8px 8px 0; }
+  .say p { margin:0 0 8px; }
+  .say p:last-child { margin:0; }
+  .say i { color:var(--muted); }
+  code { font-family:ui-monospace,Consolas,monospace; font-size:.9em; background:var(--code-bg); padding:1px 5px; border-radius:4px; overflow-wrap:anywhere; }
+  pre { background:var(--code-bg); padding:10px 12px; border-radius:8px; overflow-x:auto; font-size:13px; margin:10px 0 0; }
+  pre code { background:none; padding:0; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  .toggle { float:right; font:inherit; font-size:13px; background:transparent; color:var(--accent); border:1px solid var(--line); border-radius:6px; padding:4px 10px; cursor:pointer; }
+  body.say-only .show, body.say-only pre, body.say-only .box { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <button class="toggle" onclick="document.body.classList.toggle('say-only')">Lines only</button>
+  <h1>Clinic Booking: Loom script</h1>
+  <p class="sub">About 4 minutes 45 seconds, under the 5-minute limit. Yellow is what you say. Grey is what's on screen.</p>
+
+  <div class="box">
+    <h2>Before you hit record</h2>
+    <ol>
+      <li>Open <code>https://main.d10ptwv4szh52w.amplifyapp.com</code>, enter the key, and click <b>Reset</b> once, so the calendar has 5 weeks of times.</li>
+      <li>Make <b>4 bookings</b> with <code>demo@example.com</code>, so "My bookings" can show a second page (it shows 3 per page).</li>
+      <li>Close the tab and open the URL in a <b>new private window</b>. It starts on the Welcome / API key screen.</li>
+      <li>In VS Code, open <code>backend/index.mjs</code>, <code>frontend/index.html</code> and <code>.github/workflows/deploy.yml</code>. Zoom to about 150%.</li>
+      <li>Have the API key copied, ready to paste.</li>
+    </ol>
+  </div>
+
+  <section class="scene">
+    <header><span class="time">0:00 – 0:20</span><h2>Intro</h2></header>
+    <p class="show"><b>Screen:</b> the Welcome / API key screen.</p>
+    <div class="say">
+      <p>"Hi, I'm [name]. This is my clinic booking system: an API and a web page that uses it. All five levels are done."</p>
+      <p>"The API is one Node.js function on AWS Lambda, behind API Gateway, and the data is in DynamoDB. The page is hosted on AWS Amplify, and a GitHub Actions pipeline ships it. First the demo, then the code."</p>
+    </div>
+  </section>
+
+  <section class="scene">
+    <header><span class="time">0:20 – 1:50</span><h2>Demo: the web page</h2></header>
+    <p class="show"><b>Screen:</b> the web page. Do each step as you say it.</p>
+    <div class="say">
+      <p>"The page starts by asking for the API key, because every API call needs it. With a wrong key…" <i>(type <code>wrong</code>, Continue)</i> "…the API says 401, and I stay here. With the right key…" <i>(paste, Continue)</i> "…I'm in."</p>
+      <p>"This calendar shows the open appointments. Highlighted days have open times, with a count on each, and past days can't be picked. The data comes from <code>GET /slots</code>. These buttons filter by doctor." <i>(Click Dr Bello, then All doctors, then pick a day.)</i></p>
+      <p>"I click a time and the booking window opens for that doctor and time. I'll type the email with a capital letter and a space at the end." <i>(Click a time, type a name and <code>Ada@Example.com </code>, Confirm booking.)</i></p>
+      <p>"Here's the confirmation: the doctor, the time, a booking reference, and the email cleaned up, trimmed and lower-cased, as the spec asks. Behind the window, that day's count went down by one."</p>
+      <p>"I can cancel right here." <i>(Cancel booking.)</i> "Cancelled, and the time is free again." <i>(Done.)</i></p>
+      <p><i>(Click My bookings, enter <code>demo@example.com</code>, Find, then Load more.)</i> "My bookings shows a person's bookings three at a time. Load more fetches the next page. I can also look up a booking by its reference."</p>
+      <p>"And <b>Reset</b>, top right, calls <code>POST /reset</code>. It clears all bookings and loads five weeks of new appointments." <i>(Point at it. Don't click.)</i></p>
+    </div>
+  </section>
+
+  <section class="scene">
+    <header><span class="time">1:50 – 2:15</span><h2>How the backend is organised</h2></header>
+    <p class="show"><b>Screen:</b> <code>backend/index.mjs</code>, top of the file, then lines 13–17 (the record "addresses").</p>
+    <div class="say">
+      <p>"The whole API is this one file. It reads top to bottom: the handler, the routes, the rules, then helpers. There are no packages to install, because the AWS SDK is built into Lambda."</p>
+      <p>"Everything is in one DynamoDB table. These five lines are the 'addresses' of each kind of record: slots, each person's bookings, a lookup by booking id, saved retry answers, and the spam counter."</p>
+      <p>"The key idea: rules that must hold when lots of requests arrive at once are conditional writes, 'only save this IF…'. The database enforces them, so they hold even with many Lambdas running in parallel."</p>
+    </div>
+  </section>
+
+  <section class="scene">
+    <header><span class="time">2:15 – 2:45</span><h2>Levels 1 &amp; 2: handler, API key, checks</h2></header>
+    <p class="show"><b>Screen:</b> line 22 (<code>handler</code>), line 32 (key check), then line 121 (<code>checkAndBook</code>).</p>
+    <div class="say">
+      <p>"Every request comes into the <code>handler</code>. First, Level 2: no valid key, no entry, and the answer is 401. The key is compared in constant time, so it can't be guessed from response times. Then each method and path goes to its own route. That's Level 1."</p>
+      <p>"Booking checks follow the spec's order: 400 for a missing or invalid detail, 404 if the slot doesn't exist, 400 if it has already started. Every error has the same <code>{"error": …}</code> shape."</p>
+    </div>
+  </section>
+
+  <section class="scene">
+    <header><span class="time">2:45 – 3:25</span><h2>Level 3: never double-booked</h2></header>
+    <p class="show"><b>Screen:</b> line 186 (<code>bookSlot</code>). Point at line 194, the "ONLY IF". Then line 203 (<code>freeSlot</code>).</p>
+    <div class="say">
+      <p>"This is the important one. If I checked 'is it free?' and then saved, two people clicking at the same moment could both pass the check. So booking is one transaction that marks the slot taken <b>only if nobody has taken it yet</b>, and saves the booking in the same step. Both happen, or neither."</p>
+      <p>"With 25 people at once, only one transaction passes. The other 24 get 409. Cancelling is also one transaction: set the status to cancelled only if it's still confirmed, and free the slot. A second cancel gets 409."</p>
+    </div>
+    <pre><code>ConditionExpression: 'attribute_not_exists(bookingId)',          // the "ONLY IF"</code></pre>
+  </section>
+
+  <section class="scene">
+    <header><span class="time">3:25 – 3:55</span><h2>Level 4: safe retries and paging</h2></header>
+    <p class="show"><b>Screen:</b> line 215 (<code>startRetry</code>), then line 141 (<code>listBookings</code>).</p>
+    <div class="say">
+      <p>"Level 4. A client can send an <code>Idempotency-Key</code>. The first request with that key claims it, again 'only if nobody has', and saves its answer. A retry with the same key gets that saved answer: same status, same booking id. So no duplicate booking. The same key with a different body gets 422."</p>
+      <p>"For paging, each person's bookings are stored together, oldest first. The cursor is the position of the last booking on the page. I fetch one extra to know if there's a next page, and the last page returns <code>next_cursor: null</code>."</p>
+    </div>
+  </section>
+
+  <section class="scene">
+    <header><span class="time">3:55 – 4:25</span><h2>Level 5: stopping spam</h2></header>
+    <p class="show"><b>Screen:</b> line 235 (<code>countAttempt</code>).</p>
+    <div class="say">
+      <p>"Level 5. Each email gets a one-minute window that starts at its first attempt. Every attempt, even a failed one, adds 1 to a counter with an atomic ADD, so parallel requests are all counted. The sixth attempt in the window gets 429, with <code>Retry-After</code> saying how many seconds until the window ends."</p>
+      <p>"On top of that, API Gateway throttles total traffic before it reaches Lambda, so a flood can't overload the app or run up the bill."</p>
+    </div>
+  </section>
+
+  <section class="scene">
+    <header><span class="time">4:25 – 4:45</span><h2>DevOps &amp; security, then wrap-up</h2></header>
+    <p class="show"><b>Screen:</b> <code>.github/workflows/deploy.yml</code>.</p>
+    <div class="say">
+      <p>"Every push to main runs this pipeline. It signs in to AWS with <b>OIDC</b>, so there are no AWS keys stored in GitHub, and syncs the page to S3 for Amplify to serve over https. Each role has only what it needs: the pipeline can only write to its bucket, and the Lambda can only use its one table. There's no database password anywhere."</p>
+      <p>"So all five levels work, and the rules that matter under load are guaranteed by the database. Thanks for watching."</p>
+    </div>
+  </section>
+
+  <div class="box">
+    <h2>Cheat sheet: <code>backend/index.mjs</code></h2>
+    <table>
+      <tr><th>Line</th><th>What</th><th>Level</th></tr>
+      <tr><td>13–17</td><td>Record "addresses": SLOT, BOOKING, LOOKUP, RETRY, SPAM</td><td>–</td></tr>
+      <tr><td>22</td><td><code>handler</code>: every request comes in here</td><td>1</td></tr>
+      <tr><td>32</td><td>API key check → 401</td><td>2</td></tr>
+      <tr><td>60</td><td><code>resetSlots</code>: <code>POST /reset</code></td><td>1</td></tr>
+      <tr><td>79</td><td><code>listSlots</code>: <code>GET /slots</code></td><td>1</td></tr>
+      <tr><td>93</td><td><code>createBooking</code>: order is retry → spam → book</td><td>1–5</td></tr>
+      <tr><td>121</td><td><code>checkAndBook</code>: 400 / 404 / already started</td><td>2</td></tr>
+      <tr><td>141</td><td><code>listBookings</code>: paging with a cursor</td><td>4</td></tr>
+      <tr><td>177</td><td><code>cancelBooking</code>: <code>DELETE /bookings/{id}</code></td><td>3</td></tr>
+      <tr><td>186 / 194</td><td><code>bookSlot</code>: the "ONLY IF" transaction</td><td>3</td></tr>
+      <tr><td>203</td><td><code>freeSlot</code>: cancel + free the slot together</td><td>3</td></tr>
+      <tr><td>215</td><td><code>startRetry</code>: Idempotency-Key</td><td>4</td></tr>
+      <tr><td>235</td><td><code>countAttempt</code>: 5 per email per minute</td><td>5</td></tr>
+      <tr><td>273</td><td><code>isValidKey</code>: constant-time compare</td><td>2</td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h2>Cheat sheet: <code>frontend/index.html</code></h2>
+    <table>
+      <tr><th>Line</th><th>What</th></tr>
+      <tr><td>181</td><td><code>api()</code>: every call goes through here and adds the <code>X-API-Key</code> header</td></tr>
+      <tr><td>209</td><td><code>connect()</code>: tries the key; if accepted, shows the booking screen</td></tr>
+      <tr><td>216</td><td><code>loadSlots()</code>: <code>GET /slots</code>, then draws doctors, calendar and times</td></tr>
+      <tr><td>254</td><td><code>drawCalendar()</code>: month grid, open-time counts, past days disabled</td></tr>
+      <tr><td>291</td><td><code>drawTimes()</code>: the time cards for the chosen day</td></tr>
+      <tr><td>308 / 319</td><td>Click a time → booking window → <code>POST /bookings</code> with an <code>Idempotency-Key</code> (handles 201 / 409 / 429)</td></tr>
+      <tr><td>334</td><td><code>showConfirmation()</code>: "You are booked" inside the window</td></tr>
+      <tr><td>349</td><td><code>cancel()</code>: <code>DELETE /bookings/{id}</code></td></tr>
+      <tr><td>369</td><td><code>findMyBookings()</code>: 3 per page, Load more uses <code>next_cursor</code></td></tr>
+      <tr><td>391 / 397</td><td><code>SCHEDULE</code> + <code>reset()</code>: 5 weeks of slots, then <code>POST /reset</code></td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h2>If they ask afterwards</h2>
+    <ul>
+      <li><b>Why DynamoDB?</b> It's serverless like Lambda, there's no password (access is by IAM role), and conditional writes give the guarantees Levels 3–5 need.</li>
+      <li><b>Why API Gateway?</b> Throttling and access logs, which is the second layer of spam protection.</li>
+      <li><b>Why one file?</b> It deploys by pasting into the Lambda console, with no build step and no packages.</li>
+      <li><b>Where is the API key?</b> A Lambda environment variable. It's never in the code or the repo. The page keeps it only for the browser tab.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
